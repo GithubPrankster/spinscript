@@ -8,24 +8,38 @@ typedef enum{
 }BOOL;
 
 typedef enum{
+    //Add to accumulator.
     MVM_ADD = 0xA0,
+    //Subtract from accumulator.
     MVM_SUB = 0xA1,
+    //Push to stack.
     MVM_PSH = 0xB0,
+    //Pop off stack to Accumulator, X or Y registers, or to the void.
     MVM_POP = 0xB1,
+    //Halt!
     MVM_HLT = 0xF0,
+    //Dump current state of VM.
     MVM_STT = 0xF1
 }CMDS;
 
 typedef struct{
+    //Kilobytes of memory for you.
     uint16_t memory[UINT16_MAX];
+    //16 bytes of stack.
     uint8_t stk[16];
+    //16-bit Program Counter.
     uint16_t pc;
+    //X and Y registers.
     uint8_t X, Y; 
+    //Accumulator, good for maths.
     uint8_t A;
+    //Counter for stack.
     uint8_t stk_count;
+    //Is the system halted?
     BOOL halted;
 }machina_vm;
 
+//Initialize MachinaVM.
 void init_machina(machina_vm* mvm){
     mvm->pc = 0;
     mvm->X = 0;
@@ -35,12 +49,16 @@ void init_machina(machina_vm* mvm){
     mvm->halted = FALSE;
 }
 
+//Interpret code on MachinaVM's memory.
 void interpret_machina(machina_vm* mvm, uint16_t inst){
     uint8_t opcode = inst >> 8;
     uint8_t op = inst & 0xFF;
 
     switch(opcode){
         case MVM_ADD:
+            mvm->A += op;
+            break;
+        case MVM_SUB:
             mvm->A += op;
             break;
         case MVM_HLT:
@@ -84,29 +102,41 @@ void interpret_machina(machina_vm* mvm, uint16_t inst){
     mvm->pc += 2;
 }
 
+//Free memory that MachinaVM took for schemy reasons.
 void destroy_machina(machina_vm* mvm){
     free(mvm->stk);
     free(mvm->memory);
     free(mvm);
 }
 
+//Main loop.
 int main(int argc, char** argv){
     machina_vm* mvm = malloc(sizeof(machina_vm));
-    FILE* handle = fopen("test.mh", "rb");
-
-    uint16_t counter = 0;
-    char c = fgetc(handle); 
-    while (c != EOF){ 
-        mvm->memory[counter] = c;
-        c = fgetc(handle);
-        counter++;
-    } 
-
-    while(mvm->halted == FALSE){
-        interpret_machina(mvm, mvm->memory[mvm->pc] << 8 | mvm->memory[mvm->pc + 1]);
+    if(argc < 2){
+        fprintf(stderr, "You need to specify the code to interpret...\n");
+        return -1;
     }
+    else{
+        FILE* handle = fopen(argv[1], "rb");
+        if(!handle){
+            fprintf(stderr, "You need to specify CORRECT code to interpret...\n");
+            return -1;
+        }
 
-    fclose(handle);
-    destroy_machina(mvm);
-    return 0;
+        uint16_t counter = 0;
+        char c = fgetc(handle); 
+        while (c != EOF){ 
+            mvm->memory[counter] = c;
+            c = fgetc(handle);
+            counter++;
+        } 
+
+        while(mvm->halted == FALSE){
+            interpret_machina(mvm, mvm->memory[mvm->pc] << 8 | mvm->memory[mvm->pc + 1]);
+        }
+
+        fclose(handle);
+        destroy_machina(mvm);
+        return 0;
+    }
 }
