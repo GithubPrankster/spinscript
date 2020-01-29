@@ -8,7 +8,7 @@ game projects. It is separated into the main *SPINscript* language, currently an
 It stands for **Specially Powerful Incredibly Nonsensical**. Yep.
 
 ## And TTSVM?
-That stands for **Tornado Twisting Scripting Virtual Machine**. Equally as weird.
+That stands for **Tornado Twisting Scripting Virtual Machine**. Equally as weird. (an additional interpretation is text to speech virtual machine, but there is no speech in here... yet!)
 
 ## What about Paraphenalia?
 Paraphenalia refers to something like tools in a usually funny way. There you go.
