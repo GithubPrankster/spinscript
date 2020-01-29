@@ -1,4 +1,6 @@
-ADD 1f
-SUB 0f
+ADD 2
+ASL 1
+STT
+JNE 8 2
 STT
 HLT

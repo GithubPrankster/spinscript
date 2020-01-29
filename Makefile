@@ -1,7 +1,7 @@
 CC = gcc
 CPPC = g++
-C_OPTS = -s -Ofast -m64
-CPP_OPTS = -std=c++2a
+C_OPTS = -s -Ofast -m64 
+CPP_OPTS = -std=c++2a 
 
 ttsvm:
 	$(CC) $(C_OPTS) ttsvm.c -o ttsvm

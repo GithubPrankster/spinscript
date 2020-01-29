@@ -3,24 +3,11 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "spin_commons.h"
+
 typedef enum{
     FALSE, TRUE
 }BOOL;
-
-typedef enum{
-    //Add to accumulator.
-    SPS_ADD = 0xA0,
-    //Subtract from accumulator.
-    SPS_SUB = 0xA1,
-    //Push to stack.
-    SPS_PSH = 0xB0,
-    //Pop off stack to Accumulator, X or Y registers, or to the void.
-    SPS_POP = 0xB1,
-    //Halt!
-    SPS_HLT = 0xF0,
-    //Dump current state of VM.
-    SPS_STT = 0xF1
-}CMDS;
 
 typedef struct{
     //Kilobytes of memory for you.
@@ -37,6 +24,8 @@ typedef struct{
     uint8_t stk_count;
     //Is the system halted?
     BOOL halted;
+    //Did a jump just happen?
+    BOOL jumped;
 }machina_vm;
 
 //Initialize MachinaVM.
@@ -61,10 +50,22 @@ void interpret_machina(machina_vm* SPS, uint16_t inst){
         case SPS_SUB:
             SPS->A -= op;
             break;
-        case SPS_HLT:
-            SPS->halted = TRUE;
-            printf("System halted.\n");
+        case SPS_AOR:
+            SPS->A |= op;
             break;
+        case SPS_AND:
+            SPS->A &= op;
+            break;
+        case SPS_AXR:
+            SPS->A ^= op;
+            break;
+        case SPS_ASL:
+            SPS->A <<= op;
+            break;
+        case SPS_ASR:
+            SPS->A >>= op;
+            break;   
+        
         case SPS_PSH:
             if(SPS->stk[SPS->stk_count] != 0){
                 SPS->stk[SPS->stk_count] = op;
@@ -91,15 +92,59 @@ void interpret_machina(machina_vm* SPS, uint16_t inst){
             SPS->stk[SPS->stk_count] = 0;
             SPS->stk_count--;
             break;
+
+        case SPS_JMP:
+            SPS->pc = SPS->memory[SPS->pc += 2];
+            printf("A jump has occured. New location: %x\n", SPS->pc);
+            SPS->jumped = TRUE;
+            break;
+        case SPS_JPE:
+            if(SPS->A == op){
+                SPS->pc = SPS->memory[SPS->pc += 2];
+                printf("A jump has occured. New location: %x\n", SPS->pc);
+                SPS->jumped = TRUE;
+            }
+            else{
+                SPS->pc++;
+            }
+            
+            break;
+        case SPS_JNE:
+            if(SPS->A != op){
+                SPS->pc = SPS->memory[SPS->pc += 2];
+                printf("A jump has occured. New location: %x\n", SPS->pc);
+                SPS->jumped = TRUE;
+            }
+            else{
+                SPS->pc++;
+            }
+            break;
+
+        case SPS_HLT:
+            SPS->halted = TRUE;
+            printf("System halted.\n");
+            break;
         case SPS_STT:
             printf("X = %d, Y = %d, A = %d\nPC = %d, STK_CNT = %d\n", SPS->X, SPS->Y, SPS->A, SPS->pc, SPS->stk_count);
             break;
+        case SPS_RTS:
+            SPS->pc = SPS->stk[SPS->stk_count];
+            SPS->stk[SPS->stk_count] = 0;
+            SPS->stk_count--;
+            break;
+
         default:
             SPS->halted = TRUE;
             printf("Unknown operation %x for %x at point %d\n", opcode, op, SPS->pc);
             break;
     }
-    SPS->pc += 2;
+    if(SPS->jumped){
+        SPS->jumped = FALSE;
+    }
+    else{
+        SPS->pc += 2;
+    }
+    
 }
 
 //Free memory that MachinaVM took for schemy reasons.

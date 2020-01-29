@@ -8,28 +8,16 @@
 #include <algorithm>
 #include <string_view>
 
+#include "spin_commons.h"
+
 static const void write_hex(std::ofstream& out, char opres = 0x0){
+    printf("BYTECODE: %x\n", (unsigned int)opres);
     out.write(reinterpret_cast<char*>(&opres), sizeof(unsigned char));
 }
 
 bool is_hex(const std::string_view &v) {
   return std::all_of(std::begin(v), std::end(v), [] (unsigned char c) { return std::isxdigit(c); });
 }
-
-typedef enum{
-    //Add to accumulator.
-    SPS_ADD = 0xA0,
-    //Subtract from accumulator.
-    SPS_SUB = 0xA1,
-    //Push to stack.
-    SPS_PSH = 0xB0,
-    //Pop off stack to Accumulator, X or Y registers, or to the void.
-    SPS_POP = 0xB1,
-    //Halt!
-    SPS_HLT = 0xF0,
-    //Dump current state of VM.
-    SPS_STT = 0xF1
-}CMDS;
 
 void read_source(std::ifstream& file, const std::string& name){
     std::ofstream output(name + ".spc", std::ios::binary);
@@ -46,28 +34,66 @@ void read_source(std::ifstream& file, const std::string& name){
     file.close();
     for(auto& op : operations){
         char opres = 0x0;
+        //Math Handling
         if(op == "ADD"){
             write_hex(output, SPS_ADD);
         }
         else if(op == "SUB"){
             write_hex(output, SPS_SUB);
         }
+        else if(op == "AOR"){
+            write_hex(output, SPS_AOR);
+        }
+        else if(op == "AND"){
+            write_hex(output, SPS_AND);
+        }
+        else if(op == "AXR"){
+            write_hex(output, SPS_AXR);
+        }
+        else if(op == "ASL"){
+            write_hex(output, SPS_ASL);
+        }
+        else if(op == "ASR"){
+            write_hex(output, SPS_ASR);
+        }
+        //Num Handling
         else if(is_hex(op)){
             write_hex(output, strtoul(op.c_str(), nullptr, 16));
         }
+
+        //Stack Handling
         else if(op == "PSH"){
             write_hex(output, SPS_PSH);
         }
         else if(op == "POP"){
             write_hex(output, SPS_POP);
         }
+
+        //Jumping Handling
+        else if(op == "JMP"){
+            write_hex(output, SPS_JMP);
+        }
+        else if(op == "JPE"){
+            write_hex(output, SPS_JPE);
+        }
+        else if(op == "JNE"){
+            write_hex(output, SPS_JNE);
+        }
+
+        //System Handling
         else if(op == "STT"){
             write_hex(output, SPS_STT);
             write_hex(output);
         }else if(op == "HLT"){
             write_hex(output, SPS_HLT);
             write_hex(output);
-        }else{
+        }
+        else if(op == "RTS"){
+            write_hex(output, SPS_HLT);
+            write_hex(output);
+        }
+        //The heck did they input?
+        else{
             printf("Uh, what is %s anyways?\n", op.c_str());
         }
         
