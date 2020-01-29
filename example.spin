@@ -1,0 +1,4 @@
+ADD 1f
+SUB 0f
+STT
+HLT

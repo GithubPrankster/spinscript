@@ -9,17 +9,17 @@ typedef enum{
 
 typedef enum{
     //Add to accumulator.
-    MVM_ADD = 0xA0,
+    SPS_ADD = 0xA0,
     //Subtract from accumulator.
-    MVM_SUB = 0xA1,
+    SPS_SUB = 0xA1,
     //Push to stack.
-    MVM_PSH = 0xB0,
+    SPS_PSH = 0xB0,
     //Pop off stack to Accumulator, X or Y registers, or to the void.
-    MVM_POP = 0xB1,
+    SPS_POP = 0xB1,
     //Halt!
-    MVM_HLT = 0xF0,
+    SPS_HLT = 0xF0,
     //Dump current state of VM.
-    MVM_STT = 0xF1
+    SPS_STT = 0xF1
 }CMDS;
 
 typedef struct{
@@ -40,78 +40,77 @@ typedef struct{
 }machina_vm;
 
 //Initialize MachinaVM.
-void init_machina(machina_vm* mvm){
-    mvm->pc = 0;
-    mvm->X = 0;
-    mvm->Y = 0;
-    mvm->A = 0;
-    mvm->stk_count = 0;
-    mvm->halted = FALSE;
+void init_machina(machina_vm* SPS){
+    SPS->pc = 0;
+    SPS->X = 0;
+    SPS->Y = 0;
+    SPS->A = 0;
+    SPS->stk_count = 0;
+    SPS->halted = FALSE;
 }
 
 //Interpret code on MachinaVM's memory.
-void interpret_machina(machina_vm* mvm, uint16_t inst){
+void interpret_machina(machina_vm* SPS, uint16_t inst){
     uint8_t opcode = inst >> 8;
     uint8_t op = inst & 0xFF;
 
     switch(opcode){
-        case MVM_ADD:
-            mvm->A += op;
+        case SPS_ADD:
+            SPS->A += op;
             break;
-        case MVM_SUB:
-            mvm->A += op;
+        case SPS_SUB:
+            SPS->A -= op;
             break;
-        case MVM_HLT:
-            mvm->halted = TRUE;
+        case SPS_HLT:
+            SPS->halted = TRUE;
             printf("System halted.\n");
             break;
-        case MVM_PSH:
-            if(mvm->stk[mvm->stk_count] != 0){
-                mvm->stk[mvm->stk_count] = op;
+        case SPS_PSH:
+            if(SPS->stk[SPS->stk_count] != 0){
+                SPS->stk[SPS->stk_count] = op;
             }
             else{
-                mvm->stk_count++;
-                mvm->stk[mvm->stk_count] = op;
+                SPS->stk_count++;
+                SPS->stk[SPS->stk_count] = op;
             }
             break;
-        case MVM_POP:
+        case SPS_POP:
             switch(op){
                 case 0:
-                    mvm->A = mvm->stk[mvm->stk_count];
+                    SPS->A = SPS->stk[SPS->stk_count];
                     break;
                 case 1:
-                    mvm->X = mvm->stk[mvm->stk_count];
+                    SPS->X = SPS->stk[SPS->stk_count];
                     break;
                 case 2:
-                    mvm->Y = mvm->stk[mvm->stk_count];
+                    SPS->Y = SPS->stk[SPS->stk_count];
                     break;
                 default:
                     break;
             }
-            mvm->stk[mvm->stk_count] = 0;
-            mvm->stk_count--;
+            SPS->stk[SPS->stk_count] = 0;
+            SPS->stk_count--;
             break;
-        case MVM_STT:
-            printf("X = %d, Y = %d, A = %d\nPC = %d, STK_CNT = %d\n", mvm->X, mvm->Y, mvm->A, mvm->pc, mvm->stk_count);
+        case SPS_STT:
+            printf("X = %d, Y = %d, A = %d\nPC = %d, STK_CNT = %d\n", SPS->X, SPS->Y, SPS->A, SPS->pc, SPS->stk_count);
             break;
         default:
-            mvm->halted = TRUE;
-            printf("Unknown operation %x for %x at point %d\n", opcode, op, mvm->pc);
+            SPS->halted = TRUE;
+            printf("Unknown operation %x for %x at point %d\n", opcode, op, SPS->pc);
             break;
     }
-    mvm->pc += 2;
+    SPS->pc += 2;
 }
 
 //Free memory that MachinaVM took for schemy reasons.
-void destroy_machina(machina_vm* mvm){
-    free(mvm->stk);
-    free(mvm->memory);
-    free(mvm);
+void destroy_machina(machina_vm* SPS){
+    fprintf(stderr, "Freeing memory.\n");
+    free(SPS->memory);
 }
 
 //Main loop.
 int main(int argc, char** argv){
-    machina_vm* mvm = malloc(sizeof(machina_vm));
+    machina_vm* SPS = malloc(sizeof(machina_vm));
     if(argc < 2){
         fprintf(stderr, "You need to specify the code to interpret...\n");
         return -1;
@@ -126,17 +125,17 @@ int main(int argc, char** argv){
         uint16_t counter = 0;
         char c = fgetc(handle); 
         while (c != EOF){ 
-            mvm->memory[counter] = c;
+            SPS->memory[counter] = c;
             c = fgetc(handle);
             counter++;
         } 
 
-        while(mvm->halted == FALSE){
-            interpret_machina(mvm, mvm->memory[mvm->pc] << 8 | mvm->memory[mvm->pc + 1]);
+        while(SPS->halted == FALSE){
+            interpret_machina(SPS, SPS->memory[SPS->pc] << 8 | SPS->memory[SPS->pc + 1]);
         }
 
         fclose(handle);
-        destroy_machina(mvm);
+        destroy_machina(SPS);
         return 0;
     }
 }

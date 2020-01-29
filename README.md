@@ -1,10 +1,22 @@
-# Machina
-MachinaVM is an interpreted virtual machine based on various old architectures. machina.c documents the instructions used. It currently runs a test program. Bytecode only.
+![Spinscript rules!](promo/spinscript_full.png)
+# SPINscript
+*SPINscript* is a scripting toolset created by Uneven to provide a behaviour similar to that of SCUMM (Script Creation Utility for Maniac Mansion) for his future
+game projects. It is separated into the main *SPINscript* language, currently an Assembly-esque thing, *Paraphenalia*, a bytecode compiler for the language, and
+*TTSVM*, a virtual machine which interprets the bytecode generated.
 
-## How do I run things?
-`machina test.mh`, it'll inform you if you screwed that up.
+## What does SPIN in SPINscript stand for?
+It stands for **Specially Powerful Incredibly Nonsensical**. Yep.
 
-## What does it have?
+## And TTSVM?
+That stands for **Tornado Twisting Scripting Virtual Machine**. Equally as weird.
+
+## What about Paraphenalia?
+Paraphenalia refers to something like tools in a usually funny way. There you go.
+
+## How do I run some scripts?
+Run make for `parasc` & `ttsvm`, compile (if you want) the example script with `paraphenalia example.spin` then run `ttsvm example.spc`!
+
+## What does TTSVM have?
 * 65k of dual-byte (word) memory.
 * X, Y, A registers.
 * 16 dual-byte (word) stack to push to, or pop to the registers, or just the void.
