@@ -1,39 +1,46 @@
-typedef enum{
+enum CMDS{
     /* Math Stuff!! */
-    //Add to accumulator.
-    SPS_ADD = 0xA0,
-    //Subtract from accumulator.
-    SPS_SUB = 0xA1,
-    //OR from accumulator.
-    SPS_AOR = 0xA2,
-    //AND from accumulator.
-    SPS_AND = 0xA3,
-    //XOR from accumulator.
-    SPS_AXR = 0xA4,
-    //Shift Accumulator to the left. (A.2)
-    SPS_ASL = 0xA5,
-    //Shift Accumulator to the right. (A/2)
-    SPS_ASR = 0xA6,
+    SPS_ADD = 0b000000,
+    SPS_SUB = 0b000001,
 
-    /* Stack Stuff!! */
-    //Push to stack.
-    SPS_PSH = 0xB0,
-    //Pop off stack to Accumulator, X or Y registers, or to the void.
-    SPS_POP = 0xB1,
+    SPS_INC = 0b000010,
+    SPS_DEC = 0b000011,
 
-    /* Jump Stuff!! */
-    //Jump to somewhere. (usualy subroutine)
-    SPS_JMP = 0xC0,
-    //Jump IF Accumulator is equal to something.
-    SPS_JPE = 0xC1,
-    //Jump IF Accumulator is NOT equal to something.
-    SPS_JNE = 0xC2,
+    SPS_ROR = 0b000100,
+    SPS_AND = 0b000101,
+    SPS_XOR = 0b000110,
 
-    /* System Stuff!! */
-    //Halt!
-    SPS_HLT = 0xF0,
-    //Dump current state of VM.
-    SPS_STT = 0xF1,
-    //Return from a subroutine.
-    SPS_RTS = 0xF2,
-}CMDS;
+    SPS_NOT = 0b000111,
+    SPS_NEG = 0b001000,
+
+    SPS_ASL = 0b001001,
+    SPS_ASR = 0b001010,
+
+    //Memory stuff!
+    SPS_MOV = 0b001011,
+    SPS_CMP = 0b001100,
+
+    //Jump stuff!!
+    SPS_JMP = 0b001101,
+    SPS_JPE = 0b001110,
+    SPS_JNE = 0b001111,
+
+    //Debug stuff!
+    SPS_HLT = 0b010000,
+    SPS_DMP = 0b010001
+};
+
+enum OPERATIVE{
+    ACCUMULATOR = 0b00000,
+    INDEX_X = 0b00001,
+    INDEX_Y = 0b00010,
+    REG0 = 0b00011,
+    REG1 = 0b00100,
+    REG2 = 0b00101,
+    REG3 = 0b00110,
+    STACK_POINTER = 0b00111,
+    PROGRAM_COUNTER = 0b01000,
+    MEMORY = 0b01001,
+    LITERAL = 0b01010
+};
+

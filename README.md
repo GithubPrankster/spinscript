@@ -1,24 +1,19 @@
 ![Spinscript rules!](promo/spinscript_full.png)
 # SPINscript
-*SPINscript* is a scripting toolset created by Uneven to provide a behaviour similar to that of SCUMM (Script Creation Utility for Maniac Mansion) for his future
-game projects. It is separated into the main *SPINscript* language, currently an Assembly-esque thing, *Paraphenalia*, a bytecode compiler for the language, and
-*TTSVM*, a virtual machine which interprets the bytecode generated.
+*SPINscript* is a fantasy *architecture* created by Uneven for the future game title *Xenomissions: Flying Stars*, in which it serves as the programmable embedded CPUs
+on most of the equipment the players interact with, allowing them to program automations that shall make their lifes easier.
+
+This architecture is mainly based off the *DCPU-16* (a tribute to Markus Persson *"Notch"* and his 0x10c project) and *Intel 8086* architectures, and keeping up to
+the limitations of them and the game's time period, does not offer many instructions and memory as one would have today.
+
+**TTSVM** emulates all of the behaviour the architecture has, and is the goto for anyone who wishes to implement the architecture for other stuff. Included is also 
+the **Paraphenalia** compiler (CURRENTLY BEING REDONE!!!), which compiles down the assembly you write into bytecode that **TTSVM** can interpret.
+
+The full specifications for the system and instructions can be found in `SPECS`!
 
 ## What does SPIN in SPINscript stand for?
 It stands for **Specially Powerful Incredibly Nonsensical**. Yep.
 
-## And TTSVM?
-That stands for **Tornado Twisting Scripting Virtual Machine**. Equally as weird. (an additional interpretation is text to speech virtual machine, but there is no speech in here... yet!)
-
-## What about Paraphenalia?
-Paraphenalia refers to something like tools in a usually funny way. There you go.
-
 ## How do I run some scripts?
-Run make for `parasc` & `ttsvm`, compile (if you want) the example script with `paraphenalia example.spin` then run `ttsvm example.spc`!
-
-## What does TTSVM have?
-* 65k of dual-byte (word) memory.
-* X, Y, A registers.
-* 16 dual-byte (word) stack to push to, or pop to the registers, or just the void.
-* Halting, system state dumping.
+Run make for `parasc` & `ttsvm`, compile the example script with `parasc example.spin` then run `ttsvm example.spc`! (THIS HAS YET TO BE DONE.)
 

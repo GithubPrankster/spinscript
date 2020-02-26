@@ -1,0 +1,58 @@
+SPINSCRIPT
+SPECIFICATIONS 1.5
+CODENAME: GYROSCOPIC
+
+GYROSCOPIC SPEC IS CURRENTLY
+CONSIDERED RISC COMPARED TO 
+FUTURE SPEC 2.0!
+
+INST SIZE: 16-BIT WORD
+MEMORY: 64 KB
+
+REGISTERS:
+16 BIT ACCUMULATOR
+16 BIT X, Y REGISTERS
+16 BIT (4) REGISTERS R0, R1, R2, R3
+
+FORMAT:
+aaaaa|eeeee|iiiiii
+i - opcode
+a - operated -\
+e - operative  \~>They are (sorta) the same internally anyways!
+
+Example:
+Add 5 to Accumulator -
+            32-bit in total :O
+       16-bit                16-bit
+(00000|10001|000000 || 0000|0000|0000|0005)
+  ACC LITERAL ADD         The literal '5'
+
+STACK:
+4 LEVELS
+
+INSTRUCTIONS:
+ADD
+SUB
+
+INC
+DEC
+
+ROR
+AND
+XOR
+
+NOT
+NEG
+
+ASL
+ASR
+
+MOV
+CMP
+
+JMP
+JPE
+JNE
+
+HLT
+DUMP

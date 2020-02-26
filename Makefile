@@ -1,10 +1,10 @@
 CC = gcc
 CPPC = g++
-C_OPTS = -s -Ofast -m64 
-CPP_OPTS = -std=c++2a 
+C_OPTS = -Ofast -march=bdver2
+CPP_OPTS = -std=c++17
 
 ttsvm:
-	$(CC) $(C_OPTS) ttsvm.c -o ttsvm
+	$(CC) $(CPP_OPTS) $(C_OPTS) ttsvm.cpp -o ttsvm
 
 parasc:
 	$(CPPC) $(CPP_OPTS) $(C_OPTS) parasc.cpp -o parasc
