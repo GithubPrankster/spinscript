@@ -1,6 +1,6 @@
 ![Spinscript rules!](promo/spinscript_full.png)
 # SPINscript
-*SPINscript* is a fantasy *architecture* created by Uneven for the future game title *Xenomissions: Flying Stars*, in which it serves as the programmable embedded CPUs
+*SPINscript* is a fantasy *architecture* created by Uneven for the future game title *The Fools from Space*, in which it serves as the programmable embedded CPUs
 on most of the equipment the players interact with, allowing them to program automations that shall make their lifes easier.
 
 This architecture is mainly based off the *DCPU-16* (a tribute to Markus Persson *"Notch"* and his 0x10c project) and *Intel 8086* architectures, and keeping up to
